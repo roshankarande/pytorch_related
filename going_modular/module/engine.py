@@ -77,8 +77,8 @@ def train(model: torch.nn.Module,
     
     for epoch in tqdm(range(epochs)):
 
-        train_loss, train_acc = train_step(model=model, dataloader=train_dataloader, loss_fn=loss_fn, optimizer=optimizer)
-        test_loss, test_acc = test_step(model=model, dataloader=test_dataloader, loss_fn=loss_fn)
+        train_loss, train_acc = train_step(model=model, dataloader=train_dataloader, loss_fn=loss_fn, optimizer=optimizer, device=device)
+        test_loss, test_acc = test_step(model=model, dataloader=test_dataloader, loss_fn=loss_fn,device=device)
         
         print(
             f"Epoch: {epoch+1} | "
