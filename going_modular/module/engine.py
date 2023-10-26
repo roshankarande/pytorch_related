@@ -7,6 +7,7 @@ import torch
 
 from tqdm.auto import tqdm
 from typing import Dict, List, Tuple
+from torch.utils.tensorboard import SummaryWriter
 
 def train_step(model: torch.nn.Module, 
                dataloader: torch.utils.data.DataLoader, 
@@ -67,7 +68,8 @@ def train(model: torch.nn.Module,
           optimizer: torch.optim.Optimizer,
           loss_fn: torch.nn.Module = torch.nn.CrossEntropyLoss(),
           epochs: int = 5,
-          device: torch.device = None) -> Dict[str, List]:
+          device: torch.device = None, 
+          writer: SummaryWriter = None) -> Dict[str, List]:
     
     results = {"train_loss": [],
         "train_acc": [],
@@ -92,5 +94,24 @@ def train(model: torch.nn.Module,
         results["train_acc"].append(train_acc)
         results["test_loss"].append(test_loss)
         results["test_acc"].append(test_acc)
+
+        ## Experiment Tracking
+
+        if writer is not None:
+            writer.add_scalars(main_tag="Loss", 
+                            tag_scalar_dict={"train_loss": train_loss, "test_loss": test_loss},
+                            global_step=epoch)
+            
+            writer.add_scalars(main_tag="Accuracy", 
+                            tag_scalar_dict={"train_acc": train_acc, "test_acc": test_acc}, 
+                            global_step=epoch)
+        
+            # Track the PyTorch model architecture
+            writer.add_graph(model=model, input_to_model=torch.randn(32, 3, 224, 224).to(device))
+    
+    # Close the writer
+
+    if writer is not None:
+        writer.close()
 
     return results

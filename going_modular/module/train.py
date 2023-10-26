@@ -5,7 +5,7 @@ Trains a PyTorch image classification model using device-agnostic code.
 
 import os
 import torch
-import data_fetch, data_loader, model, engine, utils
+import data_loader, model, engine, utils
 
 import torchvision.transforms.v2 as transforms
 import argparse
